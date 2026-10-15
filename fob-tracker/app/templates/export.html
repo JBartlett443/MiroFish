@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Export — {{ brand_name }}{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Monthly export</h1>
+  <p class="muted">Pick a month and download the Excel file. Two sheets: Summary (per-user totals) and Daily (clock-in/out pairs).</p>
+</section>
+
+<div class="panel">
+  <form class="row" action="{{ url_for('export.download') }}" method="get">
+    <label>Month
+      <input type="month" name="month" value="{{ default_month }}" required>
+    </label>
+    <button class="primary">Download .xlsx</button>
+  </form>
+</div>
+{% endblock %}

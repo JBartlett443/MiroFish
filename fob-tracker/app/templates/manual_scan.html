@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Manual scan — {{ brand_name }}{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Add a manual scan</h1>
+  <p class="muted">Use this when someone forgot their fob or the reader was down.</p>
+</section>
+
+<div class="panel">
+  <form method="post" class="stack">
+    <label>User
+      <select name="user_id" required>
+        <option value="">Pick a user…</option>
+        {% for u in users %}
+          <option value="{{ u.id }}">{{ u.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div class="row">
+      <label>Date
+        <input type="date" name="date" value="{{ today }}" required>
+      </label>
+      <label>Time
+        <input type="time" name="time" value="{{ now }}" required>
+      </label>
+      <label>Direction
+        <select name="direction" required>
+          <option value="IN">Clock IN</option>
+          <option value="OUT">Clock OUT</option>
+        </select>
+      </label>
+    </div>
+    <label>Note (optional)
+      <input name="note" placeholder="e.g. forgot fob at home">
+    </label>
+    <button class="primary">Record scan</button>
+  </form>
+</div>
+{% endblock %}

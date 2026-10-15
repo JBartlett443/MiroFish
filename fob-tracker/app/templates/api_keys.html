@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}API keys — {{ brand_name }}{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>API keys</h1>
+  <p class="muted">Use these to pull data from <code>/api/v1/</code> into another dashboard.</p>
+</section>
+
+<div class="panel">
+  <h2>Create a key</h2>
+  <form method="post" class="row">
+    <input type="hidden" name="action" value="create">
+    <input name="label" placeholder="e.g. ops-dashboard" required>
+    <button class="primary">Generate</button>
+  </form>
+  {% if new_plain %}
+    <div class="flash ok" style="margin-top:1rem">
+      New key — copy it now, it won't be shown again:
+      <code class="plain-key">{{ new_plain }}</code>
+    </div>
+  {% endif %}
+</div>
+
+<div class="panel">
+  <h2>Existing keys</h2>
+  <table class="data">
+    <thead><tr><th>Label</th><th>Created</th><th>Last used</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+    {% for k in keys %}
+      <tr class="{% if k.revoked_at %}dim{% endif %}">
+        <td>{{ k.label }}</td>
+        <td>{{ k.created_at[:16] }}</td>
+        <td>{{ (k.last_used_at or '—')[:16] }}</td>
+        <td>{% if k.revoked_at %}<span class="pill">revoked</span>{% else %}<span class="pill pill-ok">active</span>{% endif %}</td>
+        <td>
+          {% if not k.revoked_at %}
+          <form method="post" class="inline">
+            <input type="hidden" name="action" value="revoke">
+            <input type="hidden" name="key_id" value="{{ k.id }}">
+            <button class="link">Revoke</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5" class="empty">No keys yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="panel">
+  <h2>Endpoints</h2>
+  <pre class="code">GET /api/v1/health
+GET /api/v1/users                           (needs X-API-Key)
+GET /api/v1/scans?from=YYYY-MM-DD&to=YYYY-MM-DD&user_id=&limit=&offset=
+GET /api/v1/currently-in
+GET /api/v1/summary?month=YYYY-MM
+GET /api/v1/daily?month=YYYY-MM&user_id=</pre>
+</div>
+{% endblock %}

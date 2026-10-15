@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Assign fob — {{ brand_name }}{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Assign a fob to a user</h1>
+  <p class="muted">Scan a fob (or type its UID), pick the user, and click Link.</p>
+</section>
+
+<div class="panel assign-card">
+  <form method="post" class="stack" id="assign-form">
+    <label class="big-label">Scan fob now
+      <input id="fob_uid" name="fob_uid" autocomplete="off" value="{{ prefill }}" required autofocus>
+      <span class="captured" id="captured">{% if prefill %}Captured ✓{% endif %}</span>
+    </label>
+    <label>User
+      <input list="user-list" name="user_search" id="user-search" placeholder="Start typing a name…" autocomplete="off">
+      <datalist id="user-list">
+        {% for u in users %}
+        <option data-id="{{ u.id }}" value="{{ u.name }}{% if u.employee_id %} ({{ u.employee_id }}){% endif %}">
+        {% endfor %}
+      </datalist>
+      <input type="hidden" id="user_id" name="user_id">
+    </label>
+    <button class="primary" type="submit">Link to user</button>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='fob_assign.js') }}"></script>
+{% endblock %}

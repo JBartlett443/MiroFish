@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — {{ brand_name }}{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Welcome back</h1>
+    <p class="muted">{{ stats.today }} · <span id="live-clock">{{ stats.now }}</span></p>
+  </div>
+  <div class="quick-actions">
+    <a class="btn" href="{{ url_for('admin.manual_scan_view') }}">+ Manual scan</a>
+    <a class="btn" href="{{ url_for('admin.fob_assign_view') }}">Assign fob</a>
+    <a class="btn" href="{{ url_for('export.export_view') }}">Export</a>
+  </div>
+</section>
+
+<section class="grid">
+  <div class="tile tile-wide">
+    <div class="tile-label">Currently clocked in</div>
+    {% if stats.currently_in %}
+    <ul class="people" id="currently-in">
+      {% for p in stats.currently_in %}
+      <li><span class="pname">{{ p.name }}</span><span class="pmeta">since {{ p.since }} · {{ p.elapsed }}</span></li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty">No one is clocked in right now.</p>
+    {% endif %}
+  </div>
+
+  <div class="tile">
+    <div class="tile-label">Scans today</div>
+    <div class="tile-num" id="scans-today">{{ stats.scans_today }}</div>
+  </div>
+  <div class="tile">
+    <div class="tile-label">People today</div>
+    <div class="tile-num" id="people-today">{{ stats.people_today }}</div>
+  </div>
+  <div class="tile">
+    <div class="tile-label">Last hour</div>
+    <div class="tile-num" id="last-hour">{{ stats.scans_last_hour }}</div>
+  </div>
+  <div class="tile">
+    <div class="tile-label">This week</div>
+    <div class="tile-num"><span id="week-total">{{ stats.week_total_hours }}</span><span class="unit"> h</span></div>
+  </div>
+
+  <div class="tile tile-wide">
+    <div class="tile-label">Hours this week</div>
+    <div class="bars" id="week-bars">
+      {% set max_h = stats.week_days|map(attribute='hours')|max %}
+      {% for d in stats.week_days %}
+        {% set pct = (d.hours / max_h * 100) if max_h and max_h > 0 else 0 %}
+        <div class="bar">
+          <div class="bar-fill" style="height: {{ pct }}%"></div>
+          <div class="bar-val">{{ "%.1f"|format(d.hours) }}</div>
+          <div class="bar-day">{{ d.date[-2:] }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="tile tile-wide">
+    <div class="tile-label">Recent scans</div>
+    <table class="recent" id="recent">
+      <tbody>
+      {% for r in stats.recent %}
+        <tr>
+          <td class="rname">{{ r.name }}</td>
+          <td><span class="pill pill-{{ r.direction|lower }}">{{ r.direction }}</span></td>
+          <td class="rtime">{{ r.time }}</td>
+          <td>{% if r.manual %}<span class="pill pill-manual">manual</span>{% endif %}</td>
+        </tr>
+      {% endfor %}
+      {% if not stats.recent %}
+        <tr><td colspan="4" class="empty">No scans yet.</td></tr>
+      {% endif %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+{% endblock %}

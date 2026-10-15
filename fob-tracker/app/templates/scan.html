@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ brand_name }} — Tap your fob</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>:root { --brand: {{ brand_color }}; }</style>
+</head>
+<body class="kiosk">
+<div id="idle" class="screen idle">
+  <div class="idle-brand">
+    <img src="{{ url_for('static', filename='logo.svg') }}" alt="" width="56" height="56">
+    <h1>{{ brand_name }}</h1>
+  </div>
+  <p class="prompt">Tap your fob to clock in or out</p>
+  <p class="clock" id="clock"></p>
+  <input id="fob" autocomplete="off" autofocus>
+</div>
+<div id="result" class="screen result hidden">
+  <div class="direction" id="direction"></div>
+  <div class="name" id="name"></div>
+  <div class="time" id="time"></div>
+</div>
+<script src="{{ url_for('static', filename='scan.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Users — {{ brand_name }}{% endblock %}
+{% block content %}
+<section class="hero"><h1>Users</h1></section>
+
+<div class="panel">
+  <h2>Add a user</h2>
+  <form method="post" class="row">
+    <input type="hidden" name="action" value="add">
+    <input name="name" placeholder="Full name" required>
+    <input name="employee_id" placeholder="Employee ID (optional)">
+    <button class="primary">Add user</button>
+  </form>
+</div>
+
+<div class="panel">
+  <h2>All users ({{ users|length }})</h2>
+  <table class="data">
+    <thead><tr><th>Name</th><th>Employee ID</th><th>Status</th><th>Added</th><th></th></tr></thead>
+    <tbody>
+    {% for u in users %}
+      <tr class="{% if not u.active %}dim{% endif %}">
+        <td>{{ u.name }}</td>
+        <td>{{ u.employee_id or '' }}</td>
+        <td>{% if u.active %}<span class="pill pill-ok">active</span>{% else %}<span class="pill">off</span>{% endif %}</td>
+        <td>{{ u.created_at[:10] }}</td>
+        <td>
+          <form method="post" class="inline">
+            <input type="hidden" name="action" value="toggle">
+            <input type="hidden" name="user_id" value="{{ u.id }}">
+            <button class="link">{% if u.active %}Deactivate{% else %}Activate{% endif %}</button>
+          </form>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5" class="empty">No users yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

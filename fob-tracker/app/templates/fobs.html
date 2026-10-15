@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Fobs — {{ brand_name }}{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Fobs</h1>
+  <div class="quick-actions">
+    <a class="btn primary" href="{{ url_for('admin.fob_assign_view') }}">+ Assign a fob</a>
+  </div>
+</section>
+
+<div class="panel">
+  <h2>Assigned ({{ assigned|length }})</h2>
+  <table class="data">
+    <thead><tr><th>Fob UID</th><th>User</th><th>Assigned</th><th></th></tr></thead>
+    <tbody>
+    {% for f in assigned %}
+      <tr>
+        <td><code>{{ f.fob_uid }}</code></td>
+        <td>{{ f.name }}</td>
+        <td>{{ f.assigned_at[:16] }}</td>
+        <td>
+          <form method="post" class="inline">
+            <input type="hidden" name="action" value="revoke">
+            <input type="hidden" name="fob_uid" value="{{ f.fob_uid }}">
+            <button class="link">Revoke</button>
+          </form>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4" class="empty">No fobs assigned yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="panel">
+  <h2>Seen but not assigned ({{ unassigned|length }})</h2>
+  <p class="muted">Fobs scanned at the kiosk that aren't yet linked to a user.</p>
+  <table class="data">
+    <thead><tr><th>Fob UID</th><th>Scans</th><th>Last seen</th><th></th></tr></thead>
+    <tbody>
+    {% for u in unassigned %}
+      <tr>
+        <td><code>{{ u.fob_uid }}</code></td>
+        <td>{{ u.cnt }}</td>
+        <td>{{ u.last_seen[:16] }}</td>
+        <td><a class="link" href="{{ url_for('admin.fob_assign_view', fob_uid=u.fob_uid) }}">Assign…</a></td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4" class="empty">None.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

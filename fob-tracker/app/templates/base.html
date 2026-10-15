@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}{{ brand_name }}{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>:root { --brand: {{ brand_color }}; }</style>
+</head>
+<body class="{% block body_class %}app{% endblock %}">
+{% block topbar %}
+<header class="topbar">
+  <a class="brand" href="{{ url_for('admin.dashboard') }}">
+    <img src="{{ url_for('static', filename='logo.svg') }}" alt="" width="28" height="28">
+    <span>{{ brand_name }}</span>
+  </a>
+  <nav>
+    <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('admin.users_view') }}">Users</a>
+    <a href="{{ url_for('admin.fobs_view') }}">Fobs</a>
+    <a href="{{ url_for('admin.fob_assign_view') }}">Assign fob</a>
+    <a href="{{ url_for('admin.manual_scan_view') }}">Manual scan</a>
+    <a href="{{ url_for('admin.api_keys_view') }}">API keys</a>
+    <a href="{{ url_for('export.export_view') }}">Export</a>
+    <a class="right" href="{{ url_for('admin.logout_view') }}">Sign out</a>
+  </nav>
+</header>
+{% endblock %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flashes">
+      {% for cat, msg in messages %}
+        <div class="flash {{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<main>{% block content %}{% endblock %}</main>
+{% block scripts %}{% endblock %}
+</body>
+</html>

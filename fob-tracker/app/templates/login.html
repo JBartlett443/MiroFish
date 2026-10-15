@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block topbar %}{% endblock %}
+{% block body_class %}auth{% endblock %}
+{% block content %}
+<div class="auth-card">
+  <div class="auth-brand">
+    <img src="{{ url_for('static', filename='logo.svg') }}" alt="" width="48" height="48">
+    <h1>{{ brand_name }}</h1>
+    <p class="muted">Manager sign-in</p>
+  </div>
+  <form method="post" class="stack">
+    <label>Username
+      <input name="username" autocomplete="username" required autofocus>
+    </label>
+    <label>Password
+      <input name="password" type="password" autocomplete="current-password" required>
+    </label>
+    {% if error %}<p class="err">{{ error }}</p>{% endif %}
+    <button class="primary">Sign in</button>
+  </form>
+</div>
+{% endblock %}
